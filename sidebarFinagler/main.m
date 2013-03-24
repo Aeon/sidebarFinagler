@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <sysexits.h>
 
+#include "BDAlias.h"
+
 #import <Foundation/Foundation.h>
 #import <CoreServices/CoreServices.h>
 #import <CoreFoundation/CoreFoundation.h>
@@ -106,7 +108,7 @@ static void ReadSidebar (NSString *plistPath) {
     
     NSDictionary *sidebarDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     
-    //--get parent dictionary/Array named animals which holds the animals dictionary items
+    //--get parent dictionary/Array which holds the favorites
     NSDictionary *favoritesList = [[sidebarDict objectForKey:@"favorites"] objectForKey:@"VolumesList"];
     
     NSError * aliasError;
@@ -127,6 +129,9 @@ static void ReadSidebar (NSString *plistPath) {
 //        NSData *aliasData = [favorite valueForKey:@"Alias"];
 //        CFDataRef aliasData = (CFDataRef)[favorite valueForKey:@"Alias"];
         CFDataRef aliasData = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, (CFDataRef)[favorite valueForKey:@"Alias"]);
+        
+        BDAlias *bdAliasData = [BDAlias aliasWithData:[favorite valueForKey:@"Alias"]];
+        NSLog(@"bdalias: %@ -> %@", (id)nameRef, (id)[bdAliasData fullPath]);
 
 /*
         NSString *testPath = @"/Users/anton/gh/sidebarFnord/bla";
