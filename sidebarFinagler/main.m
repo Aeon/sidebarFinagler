@@ -109,79 +109,41 @@ static void ReadSidebar (NSString *plistPath) {
     NSDictionary *sidebarDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     
     //--get parent dictionary/Array which holds the favorites
-    NSDictionary *favoritesList = [[sidebarDict objectForKey:@"favorites"] objectForKey:@"VolumesList"];
-    
-    NSError * aliasError;
+    NSArray *favoritesList = [[sidebarDict objectForKey:@"favorites"] objectForKey:@"VolumesList"];
 
     //---enumerate through the dictionary objects inside the parentDictionary
 	for(NSDictionary *favorite in favoritesList) {
 
-//        LSSharedFileListItemRef sflItemRef = (LSSharedFileListItemRef)favorite;
-//
-//		CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);
-//		CFURLRef urlRef = NULL;
-//        UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
-//
-//		LSSharedFileListItemResolve(sflItemRef, kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes, &urlRef, NULL);
-
-
         NSString *nameRef = [favorite valueForKey:@"Name"];
-//        NSData *aliasData = [favorite valueForKey:@"Alias"];
-//        CFDataRef aliasData = (CFDataRef)[favorite valueForKey:@"Alias"];
+
+        // use CFURL stuff instead of BDAlias
+        // because this lets us resolve the alias without triggering
+        // user interaction/mount failure popups due to being able to use
+        // kCFBookmarkResolutionWithoutUIMask | kCFBookmarkResolutionWithoutMountingMask
         CFDataRef aliasData = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, (CFDataRef)[favorite valueForKey:@"Alias"]);
-        
-        BDAlias *bdAliasData = [BDAlias aliasWithData:[favorite valueForKey:@"Alias"]];
-        NSLog(@"bdalias: %@ -> %@", (id)nameRef, (id)[bdAliasData fullPath]);
-
-/*
-        NSString *testPath = @"/Users/anton/gh/sidebarFnord/bla";
-        CFURLRef testUrlRef = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)testPath, kCFURLPOSIXPathStyle, true);
-        CFDataRef aliasData = CreateBookmarkDataWithFileSystemPath(kCFAllocatorDefault, testUrlRef, kCFBookmarkResolutionWithoutUIMask|kCFBookmarkResolutionWithoutMountingMask, NULL, NULL, NULL);
- */
-
         CFURLRef aliasUrl = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, aliasData, kCFBookmarkResolutionWithoutUIMask|kCFBookmarkResolutionWithoutMountingMask, NULL, NULL, false, NULL);
-
-        
+       
+        if(aliasUrl != nil) {
+            NSString *aliasPath = (NSString*)CFURLCopyFileSystemPath(aliasUrl, kCFURLPOSIXPathStyle);
+//            if([[NSFileManager defaultManager] fileExistsAtPath:aliasPath]) {
+                printf("%s\t%s\n", [nameRef UTF8String], [aliasPath UTF8String]);
+//                [updatedFavorites addObject:favorite];
+//            }
+//
+//            NSLog(@"%@ -> %@", (id)nameRef, (id)aliasPath);
+        }
         /*
-        CFMutableArrayRef resourcePropertiesToInclude = CFArrayCreateMutable(kCFAllocatorDefault, 0, &kCFTypeArrayCallBacks);
-        CFArrayAppendValue(resourcePropertiesToInclude, kCFURLParentDirectoryURLKey);
-        CFArrayAppendValue(resourcePropertiesToInclude, kCFURLIsDirectoryKey);
-        CFArrayAppendValue(resourcePropertiesToInclude, kCFURLNameKey);
-        CFDictionaryRef propertyDict = CFURLCreateResourcePropertiesForKeysFromBookmarkData(kCFAllocatorDefault, resourcePropertiesToInclude, aliasData);
+        BDAlias *bdAliasData = [BDAlias aliasWithData:[favorite valueForKey:@"Alias"]];
+
+        NSString *fullPath = [bdAliasData fullPath];
+        if(fullPath != nil) {            
+            NSLog(@"bdalias: %@ -> %@", (id)nameRef, (id)[bdAliasData fullPath]);
+        }
          */
-            
-//        if ( urlRef == nil ) {
-//            NSLog(@"Error decoding alias: %@\n", aliasError);
-//            exit(EX_IOERR);
-//        }
-//        if(aliasUrl != nil) {
-            NSLog(@"%@\t%@", (id)nameRef, (id)aliasUrl);
-//        }
-//        exit(EX_OK);
-
-        //        if ([[favorite valueForKey:@"minAge"] isEqualToNumber:[NSNumber numberWithInt:3]])
-//        {
-//            [mutableArray addObject:[value valueForKey:@"name"]];
-//        }
     }
-    
-//    LSSharedFileListRef sflRef = LSSharedFileListCreate(kCFAllocatorDefault, kLSSharedFileListFavoriteItems, NULL);
-
-    ///////////////////// Try to create bookmark file for destination ///////////////////
-//    aliasError = [NSError alloc];
-//    aliasUrl = [NSURL fileURLWithPath:aliasPath];
-//    
-//    NSLog(@"Trying to read alias file: %@\n", aliasUrl);
-//    
-//    alias = [NSURL bookmarkDataWithContentsOfURL:aliasUrl
-//                                           error:&aliasError];
-//    
-//    if ( alias == nil ) {
-//        NSLog(@"Error reading alias file: %@\n", aliasError);
-//        exit(EX_IOERR);
-//    }
-//    NSLog(@"Alias info: %@\n", alias);
 }
+
+#pragma mark -
 
 static CFDataRef CreateBookmarkDataWithFileSystemPath(CFAllocatorRef allocator, CFURLRef url, CFURLBookmarkCreationOptions options, CFArrayRef resourcePropertiesToInclude, CFURLRef relativeToURL, CFErrorRef* error)
 {
