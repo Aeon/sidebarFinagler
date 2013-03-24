@@ -19,11 +19,12 @@
 #define		PROGRAM_STRING  	"sidebarFinagler"
 #define		VERSION_STRING		"0.1"
 #define		AUTHOR_STRING 		"Anton Stroganov"
-#define		OPT_STRING			"vhctr"
+#define		OPT_STRING			"vhw"
 
 /////////////////// Prototypes //////////////////
 
 static void ReadSidebar (NSString *plistPath);
+static void WriteSidebar (NSString *plistPath);
 static CFDataRef CreateBookmarkDataWithFileSystemPath(CFAllocatorRef allocator, CFURLRef url, CFURLBookmarkCreationOptions options, CFArrayRef resourcePropertiesToInclude, CFURLRef relativeToURL, CFErrorRef* error);
 static void PrintVersion (void);
 static void PrintHelp (void);
@@ -33,7 +34,7 @@ static void PrintHelp (void);
 
 short		noCustomIconCopy = false;
 short		noCopyFileCreatorTypes = false;
-short		readAlias = false;
+short		writeAlias = false;
 
 ////////////////////////////////////////////
 // main program function
@@ -59,14 +60,8 @@ int main(int argc, const char * argv[])
                     PrintHelp();
                     return EX_OK;
                     break;
-                case 'c':
-                    noCustomIconCopy = true;
-                    break;
-                case 't':
-                    noCopyFileCreatorTypes = true;
-                    break;
-                case 'r':
-                    readAlias = true;
+                case 'w':
+                    writeAlias = true;
                     break;
                 default: // '?'
                     rc = 1;
@@ -90,11 +85,11 @@ int main(int argc, const char * argv[])
             return EX_NOINPUT;
         }
         
-        ReadSidebar(/*source*/ [NSString stringWithUTF8String:argv[optind]]);
-
-        // insert code here...
-        NSLog(@"Hello, World!");
-        
+        if(writeAlias) {
+            WriteSidebar(/*destination*/ [NSString stringWithUTF8String:argv[optind]]);
+        } else {
+            ReadSidebar(/*source*/ [NSString stringWithUTF8String:argv[optind]]);
+        }
     }
     return 0;
 }
@@ -141,6 +136,30 @@ static void ReadSidebar (NSString *plistPath) {
         }
          */
     }
+}
+
+#pragma mark -
+
+////////////////////////////////////////
+// Read list of names/destinations from stdin and add them to specified plist
+///////////////////////////////////////
+static void WriteSidebar (NSString *plistPath) {
+
+    NSFileHandle *input = [NSFileHandle fileHandleWithStandardInput];
+    NSData *inputData = [NSData dataWithData:[input readDataToEndOfFile]];
+    NSString *inputString = [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
+    NSArray *newFavorites = [inputString componentsSeparatedByString:@"\n"];
+
+	for(id line in newFavorites) {
+        if([line length] > 0) {
+            NSArray *favoriteData = [line componentsSeparatedByString:@"\t"];
+            NSString *nameRef = [favoriteData objectAtIndex:0];
+            NSString *pathRef = [favoriteData objectAtIndex:1];
+
+            NSLog(@"Adding link named %@ at path %@\n", nameRef, pathRef);
+        }
+    }
+
 }
 
 #pragma mark -
