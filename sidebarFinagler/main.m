@@ -121,6 +121,9 @@ static void ReadSidebar (NSString *plistPath) {
         if(aliasUrl != nil) {
             NSString *aliasPath = (NSString*)CFURLCopyFileSystemPath(aliasUrl, kCFURLPOSIXPathStyle);
 //            if([[NSFileManager defaultManager] fileExistsAtPath:aliasPath]) {
+            
+            NSLog(@"%@\n", [[favorite objectForKey:@"CustomItemProperties"] valueForKey:@"com.apple.LSSharedFileList.TemplateSystemSelector"]);
+            
                 printf("%s\t%s\n", [nameRef UTF8String], [aliasPath UTF8String]);
 //                [updatedFavorites addObject:favorite];
 //            }
@@ -145,6 +148,17 @@ static void ReadSidebar (NSString *plistPath) {
 ///////////////////////////////////////
 static void WriteSidebar (NSString *plistPath) {
 
+    NSError *backupError;
+
+    // back up the destination plist just in case
+    NSString *backupPath = [NSString stringWithFormat:@"%@.bak", plistPath];
+
+    [[NSFileManager defaultManager] copyItemAtPath:plistPath toPath:backupPath error:&backupError];
+    
+    if(backupError != nil) {
+        NSLog(@"Error backing up plist: %@\n", backupError);
+    }
+    
     NSFileHandle *input = [NSFileHandle fileHandleWithStandardInput];
     NSData *inputData = [NSData dataWithData:[input readDataToEndOfFile]];
     NSString *inputString = [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
@@ -156,6 +170,8 @@ static void WriteSidebar (NSString *plistPath) {
             NSString *nameRef = [favoriteData objectAtIndex:0];
             NSString *pathRef = [favoriteData objectAtIndex:1];
 
+            BDAlias *newAlias = [BDAlias aliasWithPath:pathRef];
+            
             NSLog(@"Adding link named %@ at path %@\n", nameRef, pathRef);
         }
     }
