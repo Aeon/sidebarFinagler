@@ -1,0 +1,249 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3A85288C16FEB86500D0DD86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85288B16FEB86500D0DD86 /* Foundation.framework */; };
+		3A85288F16FEB86500D0DD86 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A85288E16FEB86500D0DD86 /* main.m */; };
+		3A85289316FEB86500D0DD86 /* sidebarFinagler.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */; };
+		3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289916FEB9DC00D0DD86 /* CoreServices.framework */; };
+		3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3A85288516FEB86500D0DD86 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				3A85289316FEB86500D0DD86 /* sidebarFinagler.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3A85288716FEB86500D0DD86 /* sidebarFinagler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sidebarFinagler; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A85288B16FEB86500D0DD86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		3A85288E16FEB86500D0DD86 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		3A85289116FEB86500D0DD86 /* sidebarFinagler-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "sidebarFinagler-Prefix.pch"; sourceTree = "<group>"; };
+		3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sidebarFinagler.1; sourceTree = "<group>"; };
+		3A85289916FEB9DC00D0DD86 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
+		3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3A85288416FEB86500D0DD86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */,
+				3A85288C16FEB86500D0DD86 /* Foundation.framework in Frameworks */,
+				3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3A85287C16FEB86500D0DD86 = {
+			isa = PBXGroup;
+			children = (
+				3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */,
+				3A85288D16FEB86500D0DD86 /* sidebarFinagler */,
+				3A85288A16FEB86500D0DD86 /* Frameworks */,
+				3A85288816FEB86500D0DD86 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3A85288816FEB86500D0DD86 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3A85288716FEB86500D0DD86 /* sidebarFinagler */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3A85288A16FEB86500D0DD86 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3A85289916FEB9DC00D0DD86 /* CoreServices.framework */,
+				3A85288B16FEB86500D0DD86 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3A85288D16FEB86500D0DD86 /* sidebarFinagler */ = {
+			isa = PBXGroup;
+			children = (
+				3A85288E16FEB86500D0DD86 /* main.m */,
+				3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */,
+				3A85289016FEB86500D0DD86 /* Supporting Files */,
+			);
+			path = sidebarFinagler;
+			sourceTree = "<group>";
+		};
+		3A85289016FEB86500D0DD86 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3A85289116FEB86500D0DD86 /* sidebarFinagler-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3A85288616FEB86500D0DD86 /* sidebarFinagler */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A85289616FEB86500D0DD86 /* Build configuration list for PBXNativeTarget "sidebarFinagler" */;
+			buildPhases = (
+				3A85288316FEB86500D0DD86 /* Sources */,
+				3A85288416FEB86500D0DD86 /* Frameworks */,
+				3A85288516FEB86500D0DD86 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = sidebarFinagler;
+			productName = sidebarFinagler;
+			productReference = 3A85288716FEB86500D0DD86 /* sidebarFinagler */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3A85287E16FEB86500D0DD86 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = Aeontech;
+			};
+			buildConfigurationList = 3A85288116FEB86500D0DD86 /* Build configuration list for PBXProject "sidebarFinagler" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 3A85287C16FEB86500D0DD86;
+			productRefGroup = 3A85288816FEB86500D0DD86 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3A85288616FEB86500D0DD86 /* sidebarFinagler */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3A85288316FEB86500D0DD86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A85288F16FEB86500D0DD86 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3A85289416FEB86500D0DD86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.7;
+			};
+			name = Debug;
+		};
+		3A85289516FEB86500D0DD86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx10.7;
+			};
+			name = Release;
+		};
+		3A85289716FEB86500D0DD86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "sidebarFinagler/sidebarFinagler-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3A85289816FEB86500D0DD86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "sidebarFinagler/sidebarFinagler-Prefix.pch";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3A85288116FEB86500D0DD86 /* Build configuration list for PBXProject "sidebarFinagler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A85289416FEB86500D0DD86 /* Debug */,
+				3A85289516FEB86500D0DD86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3A85289616FEB86500D0DD86 /* Build configuration list for PBXNativeTarget "sidebarFinagler" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A85289716FEB86500D0DD86 /* Debug */,
+				3A85289816FEB86500D0DD86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3A85287E16FEB86500D0DD86 /* Project object */;
+}

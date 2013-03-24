@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'sidebarFinagler' target in the 'sidebarFinagler' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
