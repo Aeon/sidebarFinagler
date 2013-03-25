@@ -174,7 +174,7 @@ static void WriteSidebar () {
             [newFavorites addObject:@{
                 @"itemId": [favoriteData objectAtIndex:0],
                 @"name": [favoriteData objectAtIndex:1],
-                @"path": [favoriteData objectAtIndex:2]
+                @"path": [(NSString*)[favoriteData objectAtIndex:2] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]]
              }];
         }
     }
