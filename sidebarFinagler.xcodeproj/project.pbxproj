@@ -12,7 +12,6 @@
 		3A85289316FEB86500D0DD86 /* sidebarFinagler.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */; };
 		3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289916FEB9DC00D0DD86 /* CoreServices.framework */; };
 		3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */; };
-		3A8528A516FF84A700D0DD86 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A8528A416FF84A700D0DD86 /* BDAlias.m */; };
 		3AF858AE16FFCDBF008E5393 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF858AD16FFCDBF008E5393 /* Security.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,8 +36,6 @@
 		3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sidebarFinagler.1; sourceTree = "<group>"; };
 		3A85289916FEB9DC00D0DD86 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = System/Library/Frameworks/CoreServices.framework; sourceTree = SDKROOT; };
 		3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
-		3A8528A316FF84A700D0DD86 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
-		3A8528A416FF84A700D0DD86 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
 		3AF858AD16FFCDBF008E5393 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -88,8 +85,6 @@
 		3A85288D16FEB86500D0DD86 /* sidebarFinagler */ = {
 			isa = PBXGroup;
 			children = (
-				3A8528A316FF84A700D0DD86 /* BDAlias.h */,
-				3A8528A416FF84A700D0DD86 /* BDAlias.m */,
 				3A85288E16FEB86500D0DD86 /* main.m */,
 				3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */,
 				3A85289016FEB86500D0DD86 /* Supporting Files */,
@@ -157,7 +152,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A85288F16FEB86500D0DD86 /* main.m in Sources */,
-				3A8528A516FF84A700D0DD86 /* BDAlias.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

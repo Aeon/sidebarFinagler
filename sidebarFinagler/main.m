@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <sysexits.h>
 
-#include "BDAlias.h"
-
 #import <Foundation/Foundation.h>
 #import <CoreServices/CoreServices.h>
 #import <CoreFoundation/CoreFoundation.h>
