@@ -189,42 +189,20 @@ static void WriteSidebar () {
         UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
         
         for (NSDictionary *newItem in newFavorites) {
-//            if(itemId == 1) {
             if(itemId == [[newItem objectForKey:@"itemId"] intValue]) {
                 NSString * newName = [newItem objectForKey:@"name"];
                 NSURL * newPath = [NSURL fileURLWithPath:[newItem objectForKey:@"path"]];
                 
-                NSLog(@"Updating link id %i named %@ with new name %@ and new path %@\n", itemId, nameRef, newName, newPath);
-
-//                CFStringRef props[] = {
-//                    // kLSSharedFileListItemClass,
-//                    kLSSharedFileListItemTemplateSystemSelector,
-//                    kLSSharedFileListSpecialItemIdentifier,
-//                    kLSSharedFileListItemManaged,
-//                };
-//                int i;
-//                for(i = 0; i < sizeof(props)/sizeof(*props); i++) {
-//                    CFTypeRef propRef = LSSharedFileListItemCopyProperty(sflItemRef, props[i]);
-//                    NSLog(@" %p: %@ = %@ (%@)", props[i], (id)props[i], (id)propRef, propRef ? (id)CFCopyTypeIDDescription(CFGetTypeID(propRef)) : nil);
-//                    if(propRef) CFRelease(propRef);
-//                }
-//                NSDictionary *newProps = @{
-//                    kLSSharedFileListItemClass: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemClass),
-//                    kLSSharedFileListItemTemplateSystemSelector: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemTemplateSystemSelector),
-//                    kLSSharedFileListSpecialItemIdentifier: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListSpecialItemIdentifier),
-//                    kLSSharedFileListItemManaged: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemManaged),
-//                };
+                NSLog(@"Updating link id %i named %@ with new name %@ and new path %@\n", itemId, nameRef, newName, [newItem objectForKey:@"path"]);
 
                 // insert updated item
                 LSSharedFileListItemRef addedItem = LSSharedFileListInsertItemURL(sflRef,
-                                                                                  kLSSharedFileListItemLast,
-//                                                                                  sflItemBeforeRef,
-                                                                                  NULL,
+                                                                                  sflItemBeforeRef,
+                                                                                  (CFStringRef)newName,
                                                                                   NULL,
                                                                                   (CFURLRef)newPath,
                                                                                   NULL,
                                                                                   NULL
-//                                                                              (CFArrayRef)[NSArray arrayWithObject:(id)kLSSharedFileListItemTemplateSystemSelector]
                                                                               );
                 
                 
