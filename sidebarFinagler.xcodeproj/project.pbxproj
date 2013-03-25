@@ -13,6 +13,7 @@
 		3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289916FEB9DC00D0DD86 /* CoreServices.framework */; };
 		3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */; };
 		3A8528A516FF84A700D0DD86 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A8528A416FF84A700D0DD86 /* BDAlias.m */; };
+		3AF858AE16FFCDBF008E5393 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF858AD16FFCDBF008E5393 /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,6 +39,7 @@
 		3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		3A8528A316FF84A700D0DD86 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDAlias.h; sourceTree = "<group>"; };
 		3A8528A416FF84A700D0DD86 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDAlias.m; sourceTree = "<group>"; };
+		3AF858AD16FFCDBF008E5393 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AF858AE16FFCDBF008E5393 /* Security.framework in Frameworks */,
 				3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */,
 				3A85288C16FEB86500D0DD86 /* Foundation.framework in Frameworks */,
 				3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */,
@@ -57,6 +60,7 @@
 		3A85287C16FEB86500D0DD86 = {
 			isa = PBXGroup;
 			children = (
+				3AF858AD16FFCDBF008E5393 /* Security.framework */,
 				3A85288D16FEB86500D0DD86 /* sidebarFinagler */,
 				3A85288A16FEB86500D0DD86 /* Frameworks */,
 				3A85288816FEB86500D0DD86 /* Products */,
@@ -250,6 +254,7 @@
 				3A85289816FEB86500D0DD86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

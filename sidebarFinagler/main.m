@@ -15,16 +15,25 @@
 #import <Foundation/Foundation.h>
 #import <CoreServices/CoreServices.h>
 #import <CoreFoundation/CoreFoundation.h>
+#import <Security/Authorization.h>
 
 #define		PROGRAM_STRING  	"sidebarFinagler"
 #define		VERSION_STRING		"0.1"
 #define		AUTHOR_STRING 		"Anton Stroganov"
 #define		OPT_STRING			"vhw"
 
+extern CFStringRef kLSSharedFileListSpecialItemIdentifier;
+extern CFStringRef kLSSharedFileListItemTargetName;
+extern CFStringRef kLSSharedFileListItemManaged;
+#define kLSSharedFileListItemTemplateSystemSelector (CFStringRef)((char *)kLSSharedFileListItemTargetName + (3 * 0x40))
+#define kLSSharedFileListItemClass (CFStringRef)((char *)kLSSharedFileListItemBeforeFirst + (3 * 0x40))
+
 /////////////////// Prototypes //////////////////
 
-static void ReadSidebar (NSString *plistPath);
-static void WriteSidebar (NSString *plistPath);
+static void ReadSidebar ();
+static void WriteSidebar ();
+static void ReadSidebarFile (NSString *plistPath);
+static void WriteSidebarFile (NSString *plistPath);
 static CFDataRef CreateBookmarkDataWithFileSystemPath(CFAllocatorRef allocator, CFURLRef url, CFURLBookmarkCreationOptions options, CFArrayRef resourcePropertiesToInclude, CFURLRef relativeToURL, CFErrorRef* error);
 static void PrintVersion (void);
 static void PrintHelp (void);
@@ -86,9 +95,11 @@ int main(int argc, const char * argv[])
         }
         
         if(writeAlias) {
-            WriteSidebar(/*destination*/ [NSString stringWithUTF8String:argv[optind]]);
+            WriteSidebar();
+//            WriteSidebar(/*destination*/ [NSString stringWithUTF8String:argv[optind]]);
         } else {
-            ReadSidebar(/*source*/ [NSString stringWithUTF8String:argv[optind]]);
+            ReadSidebar();
+//            ReadSidebar(/*source*/ [NSString stringWithUTF8String:argv[optind]]);
         }
     }
     return 0;
@@ -96,10 +107,151 @@ int main(int argc, const char * argv[])
 
 #pragma mark -
 
+static void ReadSidebar () {
+//    LSSharedFileListRef sflRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    LSSharedFileListRef sflRef = LSSharedFileListCreate(NULL, kLSSharedFileListFavoriteItems, NULL);
+
+    UInt32 seed;
+
+    if(!sflRef) {
+        NSLog(@"No list!");
+        exit(EX_IOERR);
+    }
+
+    NSArray *list = [(NSArray *)LSSharedFileListCopySnapshot(sflRef, &seed) autorelease];
+
+    for(NSObject *object in list) {
+        LSSharedFileListItemRef sflItemRef = (LSSharedFileListItemRef)object;
+
+        CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);
+
+        CFURLRef urlRef = NULL;
+        LSSharedFileListItemResolve(sflItemRef, kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes, &urlRef, NULL);
+    
+        NSString *aliasPath = [(NSString*)CFURLCopyFileSystemPath(urlRef, kCFURLPOSIXPathStyle) autorelease];
+
+        UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
+        
+        printf("%i\t%s\t%s\n", itemId, [(NSString*)nameRef UTF8String], [aliasPath UTF8String]);
+        
+        CFRelease(urlRef);
+        CFRelease(nameRef);
+    }
+}
+
+#pragma mark -
+
+static void WriteSidebar () {
+
+//    LSSharedFileListRef sflRef = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    LSSharedFileListRef sflRef = LSSharedFileListCreate(NULL, kLSSharedFileListFavoriteItems, NULL);
+
+    // set up authorization so we can modify the shared list correctly
+    AuthorizationRef auth = NULL;
+    AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &auth);
+    LSSharedFileListSetAuthorization(sflRef, auth);
+
+    UInt32 seed;
+    
+    if(!sflRef) {
+        NSLog(@"No list!");
+        exit(EX_IOERR);
+    }
+    
+    NSFileHandle *input = [NSFileHandle fileHandleWithStandardInput];
+    NSData *inputData = [NSData dataWithData:[input readDataToEndOfFile]];
+    NSString *inputString = [[[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding] autorelease];
+
+    NSMutableArray *newFavorites = [[[NSMutableArray alloc] init] autorelease];
+
+    NSArray *lines = [inputString componentsSeparatedByString:@"\n"];
+
+    // parse stdin into a data structure
+	for(id line in lines) {
+        if([line length] > 0) {
+            NSArray *favoriteData = [line componentsSeparatedByString:@"\t"];
+            
+            [newFavorites addObject:@{
+                @"itemId": [favoriteData objectAtIndex:0],
+                @"name": [favoriteData objectAtIndex:1],
+                @"path": [favoriteData objectAtIndex:2]
+             }];
+        }
+    }
+
+    NSArray *list = [(NSArray *)LSSharedFileListCopySnapshot(sflRef, &seed) autorelease];
+    
+    LSSharedFileListItemRef sflItemBeforeRef = (LSSharedFileListItemRef)kLSSharedFileListItemBeforeFirst;
+    
+    for(NSObject *object in list) {
+        LSSharedFileListItemRef sflItemRef = (LSSharedFileListItemRef)object;
+        CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);        
+        UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
+        
+        for (NSDictionary *newItem in newFavorites) {
+//            if(itemId == 1) {
+            if(itemId == [[newItem objectForKey:@"itemId"] intValue]) {
+                NSString * newName = [newItem objectForKey:@"name"];
+                NSURL * newPath = [NSURL fileURLWithPath:[newItem objectForKey:@"path"]];
+                
+                NSLog(@"Updating link id %i named %@ with new name %@ and new path %@\n", itemId, nameRef, newName, newPath);
+
+//                CFStringRef props[] = {
+//                    // kLSSharedFileListItemClass,
+//                    kLSSharedFileListItemTemplateSystemSelector,
+//                    kLSSharedFileListSpecialItemIdentifier,
+//                    kLSSharedFileListItemManaged,
+//                };
+//                int i;
+//                for(i = 0; i < sizeof(props)/sizeof(*props); i++) {
+//                    CFTypeRef propRef = LSSharedFileListItemCopyProperty(sflItemRef, props[i]);
+//                    NSLog(@" %p: %@ = %@ (%@)", props[i], (id)props[i], (id)propRef, propRef ? (id)CFCopyTypeIDDescription(CFGetTypeID(propRef)) : nil);
+//                    if(propRef) CFRelease(propRef);
+//                }
+//                NSDictionary *newProps = @{
+//                    kLSSharedFileListItemClass: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemClass),
+//                    kLSSharedFileListItemTemplateSystemSelector: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemTemplateSystemSelector),
+//                    kLSSharedFileListSpecialItemIdentifier: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListSpecialItemIdentifier),
+//                    kLSSharedFileListItemManaged: LSSharedFileListItemCopyProperty(sflItemRef, kLSSharedFileListItemManaged),
+//                };
+
+                // insert updated item
+                LSSharedFileListItemRef addedItem = LSSharedFileListInsertItemURL(sflRef,
+                                                                                  kLSSharedFileListItemLast,
+//                                                                                  sflItemBeforeRef,
+                                                                                  NULL,
+                                                                                  NULL,
+                                                                                  (CFURLRef)newPath,
+                                                                                  NULL,
+                                                                                  NULL
+//                                                                              (CFArrayRef)[NSArray arrayWithObject:(id)kLSSharedFileListItemTemplateSystemSelector]
+                                                                              );
+                
+                
+                if(addedItem != nil) {
+                    NSLog(@"Added new item %@\n", addedItem);
+                    CFRelease(addedItem);
+
+                    // delete old item
+                    LSSharedFileListItemRemove(sflRef, sflItemRef);
+                } else {
+                    NSLog(@"Failed to add new item for %@\n", newPath);
+                }
+            }
+        }
+
+        sflItemBeforeRef = sflItemRef;
+        CFRelease(nameRef);
+    }
+	CFRelease(sflRef);
+}
+
+#pragma mark -
+
 ////////////////////////////////////////
 // Read sidebar plist file and output the alias paths
 ///////////////////////////////////////
-static void ReadSidebar (NSString *plistPath) {
+static void ReadSidebarFile (NSString *plistPath) {
     
     NSDictionary *sidebarDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
     
@@ -119,7 +271,7 @@ static void ReadSidebar (NSString *plistPath) {
         CFURLRef aliasUrl = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, aliasData, kCFBookmarkResolutionWithoutUIMask|kCFBookmarkResolutionWithoutMountingMask, NULL, NULL, false, NULL);
        
         if(aliasUrl != nil) {
-            NSString *aliasPath = (NSString*)CFURLCopyFileSystemPath(aliasUrl, kCFURLPOSIXPathStyle);
+            NSString *aliasPath = [(NSString*)CFURLCopyFileSystemPath(aliasUrl, kCFURLPOSIXPathStyle) autorelease];
 //            if([[NSFileManager defaultManager] fileExistsAtPath:aliasPath]) {
             
             NSLog(@"%@\n", [[favorite objectForKey:@"CustomItemProperties"] valueForKey:@"com.apple.LSSharedFileList.TemplateSystemSelector"]);
@@ -138,6 +290,8 @@ static void ReadSidebar (NSString *plistPath) {
             NSLog(@"bdalias: %@ -> %@", (id)nameRef, (id)[bdAliasData fullPath]);
         }
          */
+        if(aliasUrl) CFRelease(aliasUrl);
+        CFRelease(aliasData);
     }
 }
 
@@ -146,7 +300,7 @@ static void ReadSidebar (NSString *plistPath) {
 ////////////////////////////////////////
 // Read list of names/destinations from stdin and add them to specified plist
 ///////////////////////////////////////
-static void WriteSidebar (NSString *plistPath) {
+static void WriteSidebarFile (NSString *plistPath) {
 
     NSError *backupError;
 
@@ -161,7 +315,7 @@ static void WriteSidebar (NSString *plistPath) {
     
     NSFileHandle *input = [NSFileHandle fileHandleWithStandardInput];
     NSData *inputData = [NSData dataWithData:[input readDataToEndOfFile]];
-    NSString *inputString = [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
+    NSString *inputString = [[[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding] autorelease];
     NSArray *newFavorites = [inputString componentsSeparatedByString:@"\n"];
 
 	for(id line in newFavorites) {
@@ -176,6 +330,46 @@ static void WriteSidebar (NSString *plistPath) {
         }
     }
 
+    return;
+
+    NSDictionary *sidebarDict = [NSDictionary dictionaryWithContentsOfFile:plistPath];
+    
+    //--get parent dictionary/Array which holds the favorites
+    NSArray *favoritesList = [[sidebarDict objectForKey:@"favorites"] objectForKey:@"VolumesList"];
+    NSMutableArray *updatedFavorites;
+    
+//    LSSharedFileListInsertItemURL
+    
+    //---enumerate through the dictionary objects inside the parentDictionary
+	for(NSDictionary *favorite in favoritesList) {
+        
+        NSString *nameRef = [favorite valueForKey:@"Name"];
+        
+        // use CFURL stuff instead of BDAlias
+        // because this lets us resolve the alias without triggering
+        // user interaction/mount failure popups due to being able to use
+        // kCFBookmarkResolutionWithoutUIMask | kCFBookmarkResolutionWithoutMountingMask
+        CFDataRef aliasData = CFURLCreateBookmarkDataFromAliasRecord(kCFAllocatorDefault, (CFDataRef)[favorite valueForKey:@"Alias"]);
+        CFURLRef aliasUrl = CFURLCreateByResolvingBookmarkData(kCFAllocatorDefault, aliasData, kCFBookmarkResolutionWithoutUIMask|kCFBookmarkResolutionWithoutMountingMask, NULL, NULL, false, NULL);
+        
+        if(aliasUrl != nil) {
+            NSString *aliasPath = (NSString*)CFURLCopyFileSystemPath(aliasUrl, kCFURLPOSIXPathStyle);
+            //            if([[NSFileManager defaultManager] fileExistsAtPath:aliasPath]) {
+            printf("%s\t%s\n", [nameRef UTF8String], [aliasPath UTF8String]);
+            //                [updatedFavorites addObject:favorite];
+            //            }
+            //
+            //            NSLog(@"%@ -> %@", (id)nameRef, (id)aliasPath);
+        }
+        /*
+         BDAlias *bdAliasData = [BDAlias aliasWithData:[favorite valueForKey:@"Alias"]];
+         
+         NSString *fullPath = [bdAliasData fullPath];
+         if(fullPath != nil) {
+         NSLog(@"bdalias: %@ -> %@", (id)nameRef, (id)[bdAliasData fullPath]);
+         }
+         */
+    }
 }
 
 #pragma mark -
