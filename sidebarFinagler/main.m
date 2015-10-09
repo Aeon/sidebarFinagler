@@ -16,7 +16,7 @@
 #import <Security/Authorization.h>
 
 #define		PROGRAM_STRING  	"sidebarFinagler"
-#define		VERSION_STRING		"0.1"
+#define		VERSION_STRING		"0.2"
 #define		AUTHOR_STRING 		"Anton Stroganov"
 #define		OPT_STRING			"vhw"
 
@@ -93,14 +93,16 @@ static void ReadSidebar () {
         CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);
 
         CFURLRef urlRef = NULL;
-        LSSharedFileListItemResolve(sflItemRef, kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes, &urlRef, NULL);
+
+        urlRef = LSSharedFileListItemCopyResolvedURL(sflItemRef, kLSSharedFileListNoUserInteraction | kLSSharedFileListDoNotMountVolumes, NULL);
     
         NSString *aliasPath = [(NSString*)CFURLCopyFileSystemPath(urlRef, kCFURLPOSIXPathStyle) autorelease];
 
         UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
         
-        printf("%i\t%s\t%s\n", itemId, [(NSString*)nameRef UTF8String], [aliasPath UTF8String]);
-        
+        if([aliasPath length] > 0) {
+            printf("%i\t%s\t%s\n", itemId, [(NSString*)nameRef UTF8String], [aliasPath UTF8String]);
+        }
         CFRelease(urlRef);
         CFRelease(nameRef);
     }
@@ -133,61 +135,88 @@ static void WriteSidebar () {
     NSArray *lines = [inputString componentsSeparatedByString:@"\n"];
 
     // parse stdin into a data structure
-	for(id line in lines) {
+    for(id line in lines) {
         if([line length] > 0) {
             NSArray *favoriteData = [line componentsSeparatedByString:@"\t"];
+            NSString *path = [(NSString*)[favoriteData objectAtIndex:2] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
             
-            [newFavorites addObject:@{
-                @"itemId": [favoriteData objectAtIndex:0],
-                @"name": [favoriteData objectAtIndex:1],
-                @"path": [(NSString*)[favoriteData objectAtIndex:2] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]]
-             }];
+            // store the new favorite only if it has a path (excludes special favorites like AirDrop and iCloud)
+            if([path length] > 0) {
+                [newFavorites addObject:@{
+                    @"itemId": [favoriteData objectAtIndex:0],
+                    @"name": [favoriteData objectAtIndex:1],
+                    @"path": path
+                 }];
+            }
         }
     }
 
+    // get a copy of the current sidebar favorites list, so we are not iterating over a list while we are mutating it
     NSArray *list = [(NSArray *)LSSharedFileListCopySnapshot(sflRef, &seed) autorelease];
     
+    // initialize the pointer to 0th position in array, so we can insert new value after it
     LSSharedFileListItemRef sflItemBeforeRef = (LSSharedFileListItemRef)kLSSharedFileListItemBeforeFirst;
     
     for(NSObject *object in list) {
+        // get a reference to the old favorite in the original favorites list
         LSSharedFileListItemRef sflItemRef = (LSSharedFileListItemRef)object;
-        CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);        
+        
+        // grab the name of the old favorite
+        CFStringRef nameRef = LSSharedFileListItemCopyDisplayName(sflItemRef);
+        
+        // grab the id of the old favorite
         UInt32 itemId = LSSharedFileListItemGetID(sflItemRef);
         
+        BOOL itemReplaced = NO;
+
+        // loop through the new favorites
         for (NSDictionary *newItem in newFavorites) {
+
+            // compare old item id to new item id to see if it's one we want to replace
             if(itemId == [[newItem objectForKey:@"itemId"] intValue]) {
+                
+                // the updated name
                 NSString * newName = [newItem objectForKey:@"name"];
+                
+                // the updated path
                 NSURL * newPath = [NSURL fileURLWithPath:[newItem objectForKey:@"path"]];
                 
                 NSLog(@"Updating link id %i named %@ with new name %@ and new path %@\n", itemId, nameRef, newName, [newItem objectForKey:@"path"]);
-
+                
                 // insert updated item
-                LSSharedFileListItemRef addedItem = LSSharedFileListInsertItemURL(sflRef,
-                                                                                  sflItemBeforeRef,
-                                                                                  (CFStringRef)newName,
-                                                                                  NULL,
-                                                                                  (CFURLRef)newPath,
-                                                                                  NULL,
-                                                                                  NULL
-                                                                              );
+                LSSharedFileListItemRef addedItemRef = LSSharedFileListInsertItemURL(sflRef,
+                                                                                     sflItemBeforeRef,
+                                                                                     (CFStringRef)newName,
+                                                                                     NULL,
+                                                                                     (CFURLRef)newPath,
+                                                                                     NULL,
+                                                                                     NULL
+                                                                                     );
                 
-                
-                if(addedItem != nil) {
-                    NSLog(@"Added new item %@\n", addedItem);
-                    CFRelease(addedItem);
-
+                // if we managed to insert the replacement for the favorite successfully
+                if(addedItemRef != nil) {
+                    NSLog(@"Added new item %@\n", addedItemRef);
+                    
                     // delete old item
                     LSSharedFileListItemRemove(sflRef, sflItemRef);
+                    
+                    // replace the "insert after this item" reference with the reference to newly added one
+                    sflItemBeforeRef = addedItemRef;
+                    
+                    itemReplaced = YES;
+                    break;
+                    
                 } else {
                     NSLog(@"Failed to add new item for %@\n", newPath);
                 }
             }
         }
-
-        sflItemBeforeRef = sflItemRef;
-        CFRelease(nameRef);
+        
+        if(itemReplaced == NO) {
+            sflItemBeforeRef = sflItemRef;
+        }
+        
     }
-	CFRelease(sflRef);
 }
 
 #pragma mark -
