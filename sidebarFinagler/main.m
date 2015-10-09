@@ -130,6 +130,7 @@ static void WriteSidebar () {
     NSData *inputData = [NSData dataWithData:[input readDataToEndOfFile]];
     NSString *inputString = [[[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding] autorelease];
 
+    NSMutableArray *replaceFavorites = [[[NSMutableArray alloc] init] autorelease];
     NSMutableArray *newFavorites = [[[NSMutableArray alloc] init] autorelease];
 
     NSArray *lines = [inputString componentsSeparatedByString:@"\n"];
@@ -138,19 +139,30 @@ static void WriteSidebar () {
     for(id line in lines) {
         if([line length] > 0) {
             NSArray *favoriteData = [line componentsSeparatedByString:@"\t"];
+
+            NSNumber *itemId = [[favoriteData objectAtIndex:0] intValue];
             NSString *path = [(NSString*)[favoriteData objectAtIndex:2] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
             
             // store the new favorite only if it has a path (excludes special favorites like AirDrop and iCloud)
             if([path length] > 0) {
-                [newFavorites addObject:@{
-                    @"itemId": [favoriteData objectAtIndex:0],
-                    @"name": [favoriteData objectAtIndex:1],
-                    @"path": path
-                 }];
+                if(itemId == 0) {
+                    [newFavorites addObject:@{
+                        @"itemId": [favoriteData objectAtIndex:0],
+                        @"name": [favoriteData objectAtIndex:1],
+                        @"path": path
+                     }];
+                } else {
+                    [replaceFavorites addObject:@{
+                        @"itemId": [favoriteData objectAtIndex:0],
+                        @"name": [favoriteData objectAtIndex:1],
+                        @"path": path
+                     }];
+                    
+                }
             }
         }
     }
-
+    
     // get a copy of the current sidebar favorites list, so we are not iterating over a list while we are mutating it
     NSArray *list = [(NSArray *)LSSharedFileListCopySnapshot(sflRef, &seed) autorelease];
     
@@ -170,7 +182,7 @@ static void WriteSidebar () {
         BOOL itemReplaced = NO;
 
         // loop through the new favorites
-        for (NSDictionary *newItem in newFavorites) {
+        for (NSDictionary *newItem in replaceFavorites) {
 
             // compare old item id to new item id to see if it's one we want to replace
             if(itemId == [[newItem objectForKey:@"itemId"] intValue]) {
@@ -215,7 +227,40 @@ static void WriteSidebar () {
         if(itemReplaced == NO) {
             sflItemBeforeRef = sflItemRef;
         }
+    }
+
+//    NSLog(@"newFavorites: %@\n", newFavorites);
+    
+    // loop through the new favorites again to look for brand new favorites to insert
+    for (NSDictionary *newItem in newFavorites) {
+        // the new name
+        NSString * newName = [newItem objectForKey:@"name"];
         
+        // the new path
+        NSURL * newPath = [NSURL fileURLWithPath:[newItem objectForKey:@"path"]];
+        
+        NSLog(@"Inserting new link named %@ with new path %@\n", newName, [newItem objectForKey:@"path"]);
+        
+        // insert updated item
+        LSSharedFileListItemRef addedItemRef = LSSharedFileListInsertItemURL(sflRef,
+                                                                             sflItemBeforeRef,
+                                                                             (CFStringRef)newName,
+                                                                             NULL,
+                                                                             (CFURLRef)newPath,
+                                                                             NULL,
+                                                                             NULL
+                                                                             );
+        
+        // if we managed to insert the replacement for the favorite successfully
+        if(addedItemRef != nil) {
+            NSLog(@"Added new item %@\n", addedItemRef);
+            
+            // replace the "insert after this item" reference with the reference to newly added one
+            sflItemBeforeRef = addedItemRef;
+            
+        } else {
+            NSLog(@"Failed to add new item for %@\n", newPath);
+        }
     }
 }
 

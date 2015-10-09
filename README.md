@@ -8,7 +8,12 @@ This tool lets you export the favorites list, edit it, and import it with new de
 ## How do I use it?
 
 1. `sidebarFinagler > favorites.txt`
-2. edit favorites.txt, keeping only the entries you want to update - you should delete any entries that are going to remain unchanged.
+2. edit favorites.txt 
+
+  - delete any entries you do not wish to change
+  - update paths and names of any entries you wish to update. DO NOT change the id
+  - add any new entries at end of file with id set to 0 
+
 3. `cat favorites.txt | sidebarFinagler -w`
 
 ## But I don't want to install Xcode & compile
