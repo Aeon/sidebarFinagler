@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3A85288C16FEB86500D0DD86 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85288B16FEB86500D0DD86 /* Foundation.framework */; };
+		3A7155DD1AA05E9E00DF9588 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7155DC1AA05E9E00DF9588 /* Security.framework */; };
+		3A7155DF1AA05EA600DF9588 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7155DE1AA05EA600DF9588 /* CoreFoundation.framework */; };
+		3A7155E11AA05EAE00DF9588 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7155E01AA05EAE00DF9588 /* Foundation.framework */; };
+		3A7155E31AA05EBA00DF9588 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A7155E21AA05EBA00DF9588 /* CoreServices.framework */; };
 		3A85288F16FEB86500D0DD86 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A85288E16FEB86500D0DD86 /* main.m */; };
 		3A85289316FEB86500D0DD86 /* sidebarFinagler.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3A85289216FEB86500D0DD86 /* sidebarFinagler.1 */; };
-		3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289916FEB9DC00D0DD86 /* CoreServices.framework */; };
-		3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */; };
-		3AF858AE16FFCDBF008E5393 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AF858AD16FFCDBF008E5393 /* Security.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +29,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3A7155DC1AA05E9E00DF9588 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		3A7155DE1AA05EA600DF9588 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		3A7155E01AA05EAE00DF9588 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		3A7155E21AA05EBA00DF9588 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.9.sdk/System/Library/Frameworks/CoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		3A85288716FEB86500D0DD86 /* sidebarFinagler */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sidebarFinagler; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A85288B16FEB86500D0DD86 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3A85288E16FEB86500D0DD86 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -44,10 +48,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AF858AE16FFCDBF008E5393 /* Security.framework in Frameworks */,
-				3A85289C16FEC46D00D0DD86 /* CoreFoundation.framework in Frameworks */,
-				3A85288C16FEB86500D0DD86 /* Foundation.framework in Frameworks */,
-				3A85289A16FEB9DC00D0DD86 /* CoreServices.framework in Frameworks */,
+				3A7155E31AA05EBA00DF9588 /* CoreServices.framework in Frameworks */,
+				3A7155E11AA05EAE00DF9588 /* Foundation.framework in Frameworks */,
+				3A7155DF1AA05EA600DF9588 /* CoreFoundation.framework in Frameworks */,
+				3A7155DD1AA05E9E00DF9588 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +79,10 @@
 		3A85288A16FEB86500D0DD86 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3A7155E21AA05EBA00DF9588 /* CoreServices.framework */,
+				3A7155E01AA05EAE00DF9588 /* Foundation.framework */,
+				3A7155DE1AA05EA600DF9588 /* CoreFoundation.framework */,
+				3A7155DC1AA05E9E00DF9588 /* Security.framework */,
 				3A85289B16FEC46D00D0DD86 /* CoreFoundation.framework */,
 				3A85289916FEB9DC00D0DD86 /* CoreServices.framework */,
 				3A85288B16FEB86500D0DD86 /* Foundation.framework */,
@@ -126,7 +134,7 @@
 		3A85287E16FEB86500D0DD86 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = Aeontech;
 			};
 			buildConfigurationList = 3A85288116FEB86500D0DD86 /* Build configuration list for PBXProject "sidebarFinagler" */;
@@ -162,12 +170,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -184,7 +192,7 @@
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -192,7 +200,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -207,7 +214,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(CONFIGURATION_BUILD_DIR)/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -216,7 +223,9 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sidebarFinagler/sidebarFinagler-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -225,7 +234,9 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "sidebarFinagler/sidebarFinagler-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
